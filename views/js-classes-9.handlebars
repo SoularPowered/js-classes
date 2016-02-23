@@ -1,0 +1,183 @@
+I'm going to revisit a small project implemented in C++ that was designed to have us implement a variety of classes using inheritance and polymorphism. We're going to try and force object-oriented classes into JavaScript and see how it looks. Ready? Alright. Let's start with the basics... our superclass, Creature.
+
+For simplicity, we're going to work in one big mega-file at first and then extract things into modules when we're hitting too much complexity.
+
+https://github.com/SoularPowered/OSU-CS/tree/master/CS%20162/assignment3
+
+
+
+Our creatures will have the following associated data:
+
+Protected/Private:
+  _name: String
+  _attackDiceSides: Number
+  _attackDiceQty: Number
+  _defenseDiceSides: Number
+  _defenseDiceQty: Number
+  _defaultStr: Number  ("health")
+  _strength: Number
+  _armor: Number
+  _specialActive: Boolean
+  _tornTendon: Boolean
+  
+Public:
+  Constructor()
+  attackRoll()
+  defenseRoll()
+  updateStrength()
+  checkStrength()
+  checkArmor()
+  printStats()
+  getName()
+  tearTendon()
+  hasSpecialActive()
+  hasTornTendon()
+  toggleSpecialOff()
+  reset()
+
+You can see that ALL of our data is going to be private to the superclass and its subclasses. First, let's set up our skeleton:
+
+
+// Creature.js
+function Creature(name, aSides, aCnt, dSides, dCnt, maxStr, armorVal) {
+  // Private data
+  let creatureName = name || "Unnamed";
+  let attackDiceSides = aSides || 4;
+  let attackDiceQty = aCnt || 1;
+  let defenseDiceSides = dSides || 4;
+  let defenseDiceQty = dCnt || 1;
+  let defaultStr = maxStr || 10;
+  let strength = defaultStr;
+  let armor = armorVal || 3;
+  let specialActive = false;
+  let tornTendon = false;
+
+  // Public methods (these will close over all of our data members)
+  this.attackRoll() {
+    
+  }
+
+  this.defenseRoll() {
+    
+  }
+
+  this.updateStrength() {
+    
+  }
+
+  this.checkStrength() {
+    
+  }
+
+  this.checkArmor() {
+    
+  }
+
+  this.printStats() {
+    
+  }
+
+  this.getName() {
+    
+  }
+
+  this.tearTendon() {
+    
+  }
+
+  this.hasSpecialActive() {
+    
+  }
+
+  this.hasTornTendon() {
+    
+  }
+
+  this.toggleSpecialOff() {
+    
+  }
+
+  this.reset() {
+    
+  }
+}
+
+Creature.prototype.constructor = Creature;
+
+
+
+Here we pause. Note that I'm glossing over implementation details here to focus on the structure of what we're doing. When we create <code>new Creature()</code> (which we won't actually do!) we would pass in all of the arguments if we wanted to customize the creature. In theory, we'd treat this class as abstract - that is, we shouldn't actually create one. Our subclasses will call the base class constructor to initialize values as necessary. We've also provided some fallback values in case some subclass doesn't actually define some useful values when its called - <em>we</em> will be careful to do so, but if somebody extends our class hierarchy, we want to protect our program logic! We could also be more robust and dummy-proof this better, but that's beyond the scope of what we're trying to demonstrate here.
+
+Let's move on to our first subclass, the Barbarian and BlueMen. These two simple classes just show how we'd set some subclass default data members - simplest inheritance we can muster. Each has it's own public typeName, as well, which a Creature wouldn't have. So we have technically extended our superclass a little already.
+
+
+
+// Subclass of Creature
+function Barbarian(name) {
+  // private (closure) variables - default values to pass to superclass constructor
+  let aSides = 6;
+  let aCnt = 2;
+  let dSides = 6;
+  let dCnt = 2;
+  let armorVal = 0;
+  let maxStr = 12;
+  // pass in this arguments and steal from superclass
+  Creature.call(name, aSides, aCnt, dSides, dCnt, maxStr, armorVal);
+
+  this.typeName = "Barbarian"; // public data
+}
+
+// Now inherit from Creature:
+Barbarian.prototype = new Creature();
+Barbarian.prototype.constructor = Barbarian;
+
+// Subclass of Creature
+function BlueMen(name) {
+  // private (closure) variables - default values to pass to superclass constructor
+  let aSides = 10;
+  let aCnt = 2;
+  let dSides = 6;
+  let dCnt = 3;
+  let armorVal = 3;
+  let maxStr = 12;
+  // pass in this arguments and steal from superclass
+  Creature.call(name, aSides, aCnt, dSides, dCnt, maxStr, armorVal);
+
+  this.typeName = "Blue Men"; // public data
+}
+
+// Now inherit from Creature:
+Barbarian.prototype = new Creature();
+Barbarian.prototype.constructor = Barbarian;
+
+
+
+
+
+The goblin class is a little more interesting. There are two things about goblins we are interested in - one, they can slash other creatures tendons because they are so short. When we create our Secondly, during combat, their tendons cannot be slashed because they are too short - even if fighting other goblins!
+
+
+// Subclass of Creature
+function Goblin(name) {
+  // private (closure) variables - default values to pass to superclass constructor
+  let aSides = 6;
+  let aCnt = 2;
+  let dSides = 6;
+  let dCnt = 1;
+  let armorVal = 3;
+  let maxStr = 8;
+  // pass in this arguments and steal from superclass
+  Creature.call(name, aSides, aCnt, dSides, dCnt, maxStr, armorVal);
+
+  this.typeName = "Goblin"; // public data
+
+  // Override superclass attack roll
+  this.attackRoll() {
+    this.specialActive = false;
+    let baseRoll = Creature.attackRoll.call(this, 
+  }
+}
+
+// Now inherit from Creature:
+Barbarian.prototype = new Creature();
+Barbarian.prototype.constructor = Barbarian;
