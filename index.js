@@ -32,8 +32,8 @@ var handlebars = require('express-handlebars').create({
 });
 
 // Import express-session and set the secret
-var session = require('express-session');
-app.use(session({secret:'IWillNeverTell'}));
+// var session = require('express-session');
+// app.use(session({secret:'IWillNeverTell'}));
 
 
 // Tell express our default rendering engine and extensions
@@ -105,7 +105,7 @@ app.use(function(err, req, res, next) {
 * Start Server    *
 ******************/
 
-app.listen(app.get('port'), function(){
+app.listen(app.get('port'), '172.31.20.175', function(){
   console.log('Express started on http://52.26.146.27:' + 
               app.get('port') + 
               '; press Ctrl-C to terminate.' );
